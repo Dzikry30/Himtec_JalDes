@@ -2,7 +2,7 @@
   <div class="bg-gray-50 min-h-screen pb-20 pt-28">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <!-- ================= TOMBOL KEMBALI ================= -->
+      <!-- Tombol Kembali -->
       <router-link 
         to="/katalog" 
         class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-forest-700 transition-colors mb-6 group"
@@ -13,8 +13,13 @@
         Kembali ke Katalog
       </router-link>
 
+      <!-- ================= LOADING STATE ================= -->
+      <div v-if="isLoading" class="flex justify-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-forest-600"></div>
+      </div>
+
       <!-- ================= KARTU DETAIL ================= -->
-      <div v-if="destination" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+      <div v-else-if="destination" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
         
         <!-- Area Gambar -->
         <div class="relative h-64 sm:h-96 bg-gray-100">
@@ -97,11 +102,11 @@
         </div>
       </div>
       
-      <!-- ================= JIKA ID TIDAK DITEMUKAN ================= -->
+      <!-- ================= JIKA ID TIDAK DITEMUKAN / ERROR ================= -->
       <div v-else class="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 mt-6">
         <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         <h3 class="text-lg font-bold text-gray-800 mb-2">Destinasi Tidak Ditemukan</h3>
-        <p class="text-sm text-gray-500">Maaf, data destinasi dengan ID {{ id }} tidak tersedia.</p>
+        <p class="text-sm text-gray-500">Maaf, data destinasi dengan ID {{ id }} tidak tersedia di server.</p>
         <router-link to="/katalog" class="inline-block mt-4 bg-forest-600 text-white font-bold px-6 py-2 rounded-lg">Kembali ke Katalog</router-link>
       </div>
 
@@ -110,6 +115,8 @@
 </template>
 
 <script>
+import api from '../../services/api' // Import jembatan Axios
+
 export default { 
   name: 'DetailView',
   props: {
@@ -120,47 +127,42 @@ export default {
   },
   data() {
     return {
-      // Array Master (Database Dummy)
-      // WAJIB SAMA PERSIS SAMA YANG ADA DI KATALOG / HOME
-      allDestinations: [
-        {
-          id: 1,
-          title: 'Curug Ngebul',
-          category: 'Wisata Alam',
-          village: 'Desa Sukamaju, Jawa Barat',
-          description: 'Curug Ngebul adalah air terjun alami dengan pemandangan hutan hijau yang masih asri. Udara di sekitar curug sangat segar dan cocok untuk melepas penat dari hiruk pikuk kota. Terdapat jalur trekking ringan sepanjang 500 meter yang akan membawa Anda melewati hamparan sawah dan kebun warga. Di area bawah air terjun, tersedia kolam alami yang aman untuk berenang.',
-          image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=1200&auto=format&fit=crop',
-          mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-6.732023,108.545262',
-          waUrl: 'https://wa.me/6281234567890?text=Halo%20saya%20tertarik%20dengan%20wisata%20Curug%20Ngebul'
-        },
-        {
-          id: 2,
-          title: 'Sate Maranggi Spesial',
-          category: 'Kuliner Khas',
-          village: 'Desa Cibodas, Jawa Barat',
-          description: 'Sate Maranggi khas Cibodas ini dibuat dari daging sapi pilihan yang empuk. Bumbu rahasia turun temurun dari keluarga membuat rasanya sangat khas. Disajikan dengan acar dan nasi hangat, sangat cocok untuk makan siang atau malam.',
-          image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=1200&auto=format&fit=crop',
-          mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-6.805421,107.617121',
-          waUrl: 'https://wa.me/6281234567891?text=Halo%20saya%20ingin%20memesan%20Sate%20Maranggi'
-        },
-        {
-          id: 3,
-          title: 'Anyaman Bambu Pak Karto',
-          category: 'Kerajinan',
-          village: 'Desa Wates, Yogyakarta',
-          description: 'Kerajinan anyaman bambu ini dibuat langsung oleh tangan-tangan kreatif warga Desa Wates. Produk yang dihasilkan meliputi tas, tempat buah, dan hiasan dinding. Setiap produk dibuat dengan teliti menggunakan bambu pilihan yang ramah lingkungan.',
-          image: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1200&auto=format&fit=crop',
-          mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-7.901234,110.123456',
-          waUrl: 'https://wa.me/6281234567892?text=Halo%20saya%20tertarik%20dengan%20anyaman%20bambu'
-        }
-      ]
+      destination: null, // Data dari API bakal masuk sini
+      isLoading: true    // State loading
     }
   },
-  computed: {
-    // Ambil data berdasarkan ID dari URL
-    destination() {
-      // Bandingin string ID (dari URL) dengan angka ID di array
-      return this.allDestinations.find(d => String(d.id) === String(this.id)) || null
+  mounted() {
+    this.fetchDetail()
+  },
+  methods: {
+    async fetchDetail() {
+      try {
+        this.isLoading = true
+        // Nembak route `Route::get('/wisata/{id}', ...)`
+        const response = await api.get(`/wisata/${this.id}`)
+        
+        // Debugging (Bisa dihapus kalau udah jalan)
+        console.log("Detail dari Laravel:", response.data)
+
+        const item = response.data.data // Ambil objeknya
+
+        // Mapping data (SESUAIKAN NAMA FIELD DENGAN DATABASE LARAVEL LO)
+        this.destination = {
+          id: item.id,
+          title: item.nama_wisata || 'Tanpa Nama', 
+          category: item.kategori || 'Wisata',
+          village: item.desa ? item.desa.nama_desa : 'Lokasi Desa', // Sesuaikan relasi
+          description: item.deskripsi || 'Tidak ada deskripsi.',
+          image: item.gambar || 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=1200',
+          mapsUrl: item.link_maps || '#',
+          waUrl: `https://wa.me/${item.no_wa || '6281234567890'}?text=Halo,%20saya%20tertarik%20dengan%20${item.nama_wisata}`
+        }
+      } catch (error) {
+        console.error("Gagal ambil detail dari Laravel:", error)
+        // Biarkan destination null biar muncul Empty State
+      } finally {
+        this.isLoading = false
+      }
     }
   }
 }
