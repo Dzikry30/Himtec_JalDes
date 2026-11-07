@@ -3,29 +3,17 @@
     
     <!-- ================= BACKGROUND VIDEO FULL SCREEN ================= -->
     <div class="absolute inset-0 z-0">
-      <!-- VIDEO MUTER OTOMATIS -->
-      <video 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        class="w-full h-full object-cover object-center"
-        poster="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop"
-      >
-        <!-- Ganti link video ini dengan video desa asli lo nanti -->
-      <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+      <video autoplay loop muted playsinline class="w-full h-full object-cover object-center" poster="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop">
+        <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
       </video>
-      
-      <!-- Overlay Gelap Global biar teks kiri kebaca -->
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
 
     <!-- ================= LAYOUT UTAMA ================= -->
     <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-full items-center justify-between gap-12">
       
-      <!-- ================= PANEL KIRI (TEKS QUOTE) ================= -->
+      <!-- PANEL KIRI (TEKS QUOTE) -->
       <div class="hidden lg:flex flex-col justify-center w-1/2 text-white">
-        <!-- Judul -->
         <h2 class="text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 drop-shadow-xl">
           Kelola Potensi Desa, <br /> Jemput Wisatawan.
         </h2>
@@ -34,12 +22,10 @@
         </p>
       </div>
 
-      <!-- ================= PANEL KANAN (KARTU PUTIH SOLID) ================= -->
+      <!-- PANEL KANAN (KARTU PUTIH SOLID) -->
       <div class="w-full lg:w-[450px] bg-white rounded-3xl shadow-2xl p-8 sm:p-10 relative">
         
-        <!-- Header Form -->
         <div class="text-center mb-8">
-          <!-- Logo di Mobile -->
           <div class="lg:hidden inline-flex items-center gap-2 mb-4">
             <img :src="logo" alt="Logo" class="w-10 h-10 rounded-full object-cover" />
             <span class="font-extrabold text-lg text-gray-900">DesaWisata</span>
@@ -49,10 +35,14 @@
           <p class="text-gray-500 text-sm">Silakan masuk ke akun pengelola Anda.</p>
         </div>
 
+        <!-- Tampilkan pesan Error jika login gagal -->
+        <div v-if="errorMessage" class="mb-5 bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-200">
+          {{ errorMessage }}
+        </div>
+
         <!-- Form -->
         <form @submit.prevent="handleLogin" class="space-y-5">
           
-          <!-- Input Email -->
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-1.5">Email</label>
             <div class="relative group">
@@ -69,7 +59,6 @@
             </div>
           </div>
 
-          <!-- Input Password -->
           <div>
             <div class="flex justify-between items-center mb-1.5">
               <label class="block text-sm font-bold text-gray-700">Kata Sandi</label>
@@ -86,12 +75,7 @@
                 placeholder="••••••••" 
                 class="block w-full pl-11 pr-11 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-forest-500 focus:border-forest-500 focus:bg-white transition-all" 
               />
-              <!-- Ikon Mata -->
-              <button 
-                type="button" 
-                @click="showPassword = !showPassword"
-                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-forest-600 transition-colors"
-              >
+              <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-forest-600 transition-colors">
                 <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                 <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
               </button>
@@ -101,32 +85,13 @@
           <!-- Tombol Submit -->
           <button 
             type="submit" 
-            class="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-forest-600 hover:bg-forest-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forest-500 transition-all mt-6"
+            :disabled="isLoading"
+            class="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-emerald-500 bg-forest-600 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forest-500 transition-all mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Masuk ke Dashboard
+            <svg v-if="isLoading" class="animate-spin h-5 w-5 text-white]\" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            {{ isLoading ? 'Memproses...' : 'Masuk ke Dashboard' }}
           </button>
         </form>
-
-        <!-- ================= TOMBOL SIMULASI ================= -->
-        <div class="mt-6 pt-6 border-t border-gray-200">
-          <p class="text-xs text-center text-gray-500 mb-3 font-semibold uppercase tracking-wider">Atau coba simulasi:</p>
-          <div class="grid grid-cols-2 gap-3">
-            <button 
-              @click="simulateLogin('agensi')"
-              class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold py-2.5 rounded-lg transition-colors"
-            >
-              <svg class="w-4 h-4 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-              Agensi
-            </button>
-            <button 
-              @click="simulateLogin('kades')"
-              class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold py-2.5 rounded-lg transition-colors"
-            >
-              <svg class="w-4 h-4 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Kepala Desa
-            </button>
-          </div>
-        </div>
 
         <!-- Link Bawah -->
         <div class="mt-6 text-center">
@@ -145,6 +110,7 @@
 
 <script>
 import logo from '../../assets/logo.png'
+import api from '../../services/api' // Import Jembatan API
 
 export default { 
   name: 'LoginView',
@@ -153,26 +119,50 @@ export default {
       logo,
       email: '',
       password: '',
-      showPassword: false
+      showPassword: false,
+      isLoading: false,
+      errorMessage: ''
     }
   },
   methods: {
-    handleLogin() {
-      const isKades = this.email.toLowerCase().includes('kades')
-      alert(`Login Berhasil! (Simulasi sebagai ${isKades ? 'Kepala Desa' : 'Agensi'})`)
+    async handleLogin() {
+      this.isLoading = true
+      this.errorMessage = ''
       
-      if (isKades) {
-        this.$router.push('/kades/dashboard')
-      } else {
-        this.$router.push('/agensi/dashboard')
-      }
-    },
-    
-    simulateLogin(role) {
-      if (role === 'kades') {
-        this.$router.push('/kades/dashboard')
-      } else {
-        this.$router.push('/agensi/dashboard')
+      try {
+        // Nembak API Laravel
+        const response = await api.post('/login', {
+          email: this.email,
+          password: this.password
+        })
+
+        // Simpan Token di LocalStorage
+        localStorage.setItem('auth_token', response.data.access_token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+
+        // Cek Role-nya
+        const role = response.data.user.role
+
+        // Redirect sesuai Role
+        if (role === 'kd') {
+          this.$router.push('/kades/dashboard')
+        } else if (role === 'agensi') {
+          this.$router.push('/agensi/dashboard')
+        } else if (role === 'admin') {
+          this.$router.push('/admin/dashboard') // (Kalau nanti ada)
+        } else {
+          alert("Role tidak dikenali.")
+        }
+
+      } catch (error) {
+        // Tangkap error dari Laravel (misal password salah)
+        if (error.response && error.response.data && error.response.data.message) {
+          this.errorMessage = error.response.data.message
+        } else {
+          this.errorMessage = 'Gagal terhubung ke server. Pastikan Laravel menyala.'
+        }
+      } finally {
+        this.isLoading = false
       }
     }
   }
