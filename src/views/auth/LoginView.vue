@@ -12,7 +12,7 @@
     <!-- ================= LAYOUT UTAMA ================= -->
     <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-full items-center justify-between gap-12">
       
-      <!-- PANEL KIRI (TEKS QUOTE) -->
+      <!-- PANEL KIRI -->
       <div class="hidden lg:flex flex-col justify-center w-1/2 text-white">
         <h2 class="text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 drop-shadow-xl">
           Kelola Potensi Desa, <br /> Jemput Wisatawan.
@@ -22,7 +22,7 @@
         </p>
       </div>
 
-      <!-- PANEL KANAN (KARTU PUTIH SOLID) -->
+      <!-- PANEL KANAN (KARTU PUTIH) -->
       <div class="w-full lg:w-[450px] bg-white rounded-3xl shadow-2xl p-8 sm:p-10 relative">
         
         <div class="text-center mb-8">
@@ -30,14 +30,14 @@
             <img :src="logo" alt="Logo" class="w-10 h-10 rounded-full object-cover" />
             <span class="font-extrabold text-lg text-gray-900">DesaWisata</span>
           </div>
-
           <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Selamat Datang</h2>
           <p class="text-gray-500 text-sm">Silakan masuk ke akun pengelola Anda.</p>
         </div>
 
-        <!-- Tampilkan pesan Error jika login gagal -->
-        <div v-if="errorMessage" class="mb-5 bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-200">
-          {{ errorMessage }}
+        <!-- Kotak Error -->
+        <div v-if="errorMessage" class="mb-5 bg-red-50 text-red-600 p-3.5 rounded-xl text-sm font-medium border border-red-200 flex items-start gap-2">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{{ errorMessage }}</span>
         </div>
 
         <!-- Form -->
@@ -82,24 +82,24 @@
             </div>
           </div>
 
-          <!-- Tombol Submit -->
+          <!-- Tombol Submit (FIX WARNA) -->
           <button 
             type="submit" 
             :disabled="isLoading"
-            class="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-emerald-500 bg-forest-600 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forest-500 transition-all mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
+            class="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-dark bg-forest-600 hover:bg-forest-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forest-500 transition-all mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <svg v-if="isLoading" class="animate-spin h-5 w-5 text-white]\" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <svg v-if="isLoading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
             {{ isLoading ? 'Memproses...' : 'Masuk ke Dashboard' }}
           </button>
         </form>
 
-        <!-- Link Bawah -->
         <div class="mt-6 text-center">
           <p class="text-sm text-gray-600">
             Belum punya akun? 
-            <router-link to="/register" class="font-bold text-forest-600 hover:text-forest-700 hover:underline">
-              Daftar di sini
-            </router-link>
+            <router-link to="/register" class="font-bold text-forest-600 hover:text-forest-700 hover:underline">Daftar di sini</router-link>
           </p>
         </div>
 
@@ -110,7 +110,7 @@
 
 <script>
 import logo from '../../assets/logo.png'
-import api from '../../services/api' // Import Jembatan API
+import api from '../../services/api'
 
 export default { 
   name: 'LoginView',
@@ -125,46 +125,53 @@ export default {
     }
   },
   methods: {
-    async handleLogin() {
-      this.isLoading = true
-      this.errorMessage = ''
-      
-      try {
-        // Nembak API Laravel
-        const response = await api.post('/login', {
-          email: this.email,
-          password: this.password
-        })
+async handleLogin() {
+  this.isLoading = true
+  this.errorMessage = ''
+  
+  try {
+    const response = await api.post('/login', {
+      email: this.email,
+      password: this.password
+    })
 
-        // Simpan Token di LocalStorage
-        localStorage.setItem('auth_token', response.data.access_token)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
+    // DEBUGGING: Buka console browser (F12) buat liat isi persis dari Laravel
+    console.log("Response Login:", response.data)
 
-        // Cek Role-nya
-        const role = response.data.user.role
+    // Kadang Laravel ngasih response.data.data.user (tergantung Controller)
+    // Kita coba handle dua-duanya
+    const userData = response.data.user || response.data.data?.user
+    const tokenData = response.data.access_token || response.data.data?.access_token
 
-        // Redirect sesuai Role
-        if (role === 'kd') {
-          this.$router.push('/kades/dashboard')
-        } else if (role === 'agensi') {
-          this.$router.push('/agensi/dashboard')
-        } else if (role === 'admin') {
-          this.$router.push('/admin/dashboard') // (Kalau nanti ada)
-        } else {
-          alert("Role tidak dikenali.")
-        }
-
-      } catch (error) {
-        // Tangkap error dari Laravel (misal password salah)
-        if (error.response && error.response.data && error.response.data.message) {
-          this.errorMessage = error.response.data.message
-        } else {
-          this.errorMessage = 'Gagal terhubung ke server. Pastikan Laravel menyala.'
-        }
-      } finally {
-        this.isLoading = false
-      }
+    if (!userData || !tokenData) {
+      this.errorMessage = 'Format response dari server tidak dikenali.'
+      return
     }
+
+    localStorage.setItem('auth_token', tokenData)
+    localStorage.setItem('user', JSON.stringify(userData))
+
+    const role = userData.role
+
+    if (role === 'kd') {
+      this.$router.push({ name: 'kades-dashboard' })
+    } else if (role === 'agensi') {
+      this.$router.push({ name: 'agensi-dashboard' })
+    } else {
+      this.errorMessage = 'Role tidak dikenali: ' + role
+    }
+
+  } catch (error) {
+    console.error(error)
+    if (error.response && error.response.data && error.response.data.message) {
+      this.errorMessage = error.response.data.message
+    } else {
+      this.errorMessage = 'Gagal terhubung ke server.'
+    }
+  } finally {
+    this.isLoading = false
+  }
+}
   }
 }
 </script>

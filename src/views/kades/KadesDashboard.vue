@@ -1,5 +1,6 @@
 <template>
-  <DashboardLayout role="kades" userName="Pak Kades" pageTitle="Dashboard Kepala Desa">
+  <!-- JANGAN kirim role/user secara manual, biarkan DashboardLayout yang ambil dari localStorage -->
+  <DashboardLayout pageTitle="Dashboard Kepala Desa">
     
     <!-- Header -->
     <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -8,7 +9,9 @@
         <p class="text-sm text-gray-500">Pantau aktivitas dan potensi wisata di desa Anda hari ini.</p>
       </div>
       <router-link to="/kades/moderasi" class="inline-flex items-center gap-2 bg-orange-100 hover:bg-orange-200 text-orange-700 text-sm font-bold px-4 py-2.5 rounded-xl transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
         Tinjau Usulan (3)
       </router-link>
     </div>
@@ -108,8 +111,17 @@
 
 <script>
 import DashboardLayout from '../../layouts/DashboardLayout.vue'
+
 export default { 
   name: 'KadesDashboard',
-  components: { DashboardLayout }
+  components: { DashboardLayout },
+  // Tambahin pengecekan biar kalau belum login, lempar ke login
+  mounted() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null')
+    if (!user || user.role !== 'kd') {
+      // Kalau bukan Kades, tendang ke login
+      this.$router.push({ name: 'login' })
+    }
+  }
 }
 </script>

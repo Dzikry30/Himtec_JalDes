@@ -20,7 +20,7 @@ export default {
       const path = this.$route.path
       
 
-      const isDashboard = path.startsWith('/agensi') || path.startsWith('/kades')
+      const isDashboard = path.startsWith('/agensi') || path.startsWith('/kades') || path.startsWith('/admin')
       const isReels = path === '/jelajah'
       
       return !isDashboard && !isReels
