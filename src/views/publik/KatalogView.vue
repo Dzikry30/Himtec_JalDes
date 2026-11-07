@@ -40,16 +40,16 @@
         <div class="mt-6 pt-6 border-t border-gray-100">
           <p class="text-sm font-bold text-gray-700 mb-3">Kategori Potensi:</p>
           <div class="flex flex-wrap gap-3">
-            <button @click="setKategori('')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === '' ? 'bg-forest-800 text-white border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
+            <button @click="setKategori('')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === '' ? 'bg-forest-800 text-emerald-500 border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
               Semua Kategori
             </button>
-            <button @click="setKategori('wisata')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === 'wisata' ? 'bg-forest-800 text-white border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
+            <button @click="setKategori('wisata')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === 'wisata' ? 'bg-forest-800 text-emerald-500 border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
               Wisata Alam
             </button>
-            <button @click="setKategori('kuliner')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === 'kuliner' ? 'bg-forest-800 text-white border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
+            <button @click="setKategori('kuliner')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === 'kuliner' ? 'bg-forest-800 text-emerald-500 border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
               Kuliner Khas
             </button>
-            <button @click="setKategori('kerajinan')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === 'kerajinan' ? 'bg-forest-800 text-white border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
+            <button @click="setKategori('kerajinan')" :class="['inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-colors duration-200', activeKategori === 'kerajinan' ? 'bg-forest-800 text-emerald-500 border-forest-800 shadow-md hover:bg-forest-900' : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400 hover:text-forest-700 hover:bg-forest-50']">
               Kerajinan
             </button>
           </div>

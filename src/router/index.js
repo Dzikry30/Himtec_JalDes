@@ -18,7 +18,7 @@ import RiwayatView from '../views/agensi/RiwayatView.vue'
 // Import Kades
 import KadesDashboard from '../views/kades/KadesDashboard.vue'
 import KadesModerasi from '../views/kades/KadesModerasi.vue'
-import KadesDataWisata from '../views/kades/KadesDataWisata.vue' // <--- INI YANG KURANG TADI
+import KadesDataWisata from '../views/kades/KadesDataWisata.vue'
 
 const routes = [
   // ================= PUBLIK =================
@@ -26,7 +26,9 @@ const routes = [
   { path: '/katalog', name: 'katalog', component: KatalogView },
   { path: '/destinasi/:id', name: 'detail', component: DetailView, props: true },
   { path: '/jelajah', name: 'jelajah', component: JelajahView },
-  { path: '/about', name: 'about', component: AboutView },
+  
+  // RUTE TENTANG (Disesuaikan dengan Navbar)
+  { path: '/tentang', name: 'tentang', component: AboutView },
 
   // ================= AUTH =================
   { path: '/login', name: 'login', component: LoginView },

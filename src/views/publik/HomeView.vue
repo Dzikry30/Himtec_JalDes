@@ -127,7 +127,7 @@
           
           <div class="relative z-10 p-8 sm:p-12 md:w-3/5 text-center md:text-left">
             <!-- FIX: text-dark diganti text-white -->
-            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-500 mb-4">
               Punya Potensi Wisata di Desa Anda?
             </h2>
             <p class="text-forest-100 text-base sm:text-lg mb-8 max-w-lg mx-auto md:mx-0">
