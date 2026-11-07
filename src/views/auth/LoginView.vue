@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen relative flex items-center justify-center overflow-hidden bg-gray-900 pt-20 pb-10">
     
     <!-- ================= BACKGROUND VIDEO FULL SCREEN ================= -->
@@ -28,7 +28,7 @@
         <div class="text-center mb-8">
           <div class="lg:hidden inline-flex items-center gap-2 mb-4">
             <img :src="logo" alt="Logo" class="w-10 h-10 rounded-full object-cover" />
-            <span class="font-extrabold text-lg text-gray-900">DesaWisata</span>
+            <span class="font-extrabold text-lg text-gray-900">JALDES</span>
           </div>
 
           <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Selamat Datang</h2>

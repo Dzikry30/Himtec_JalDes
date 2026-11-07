@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <footer class="bg-forest-900 text-forest-100">
     <!-- Bagian Atas -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -9,14 +9,12 @@
           <router-link to="/" class="flex items-center gap-3 mb-4">
             <img
               :src="logo"
-              alt="DesaWisata Explorer"
+              alt="JALDES"
               class="w-12 h-12 rounded-full object-cover"
             />
             <div class="flex flex-col leading-none">
               <!-- FIX: text-dark-forest-100 -> text-white -->
-              <span class="font-extrabold tracking-tight text-lg text-white">
-                DesaWisata
-              </span>
+              <span class="font-extrabold tracking-tight text-lg text-white">JALDES</span>
               <span class="text-[10px] tracking-[0.25em] uppercase font-bold text-forest-300 mt-1">
                 Explorer
               </span>
@@ -123,7 +121,7 @@
     <div class="border-t border-forest-800">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
         <p class="text-xs text-forest-300/70">
-          © {{ new Date().getFullYear() }} DesaWisata Explorer. Dibuat untuk promosi desa.
+          © {{ new Date().getFullYear() }} JALDES. Dibuat untuk promosi desa.
         </p>
         <div class="flex items-center gap-4 text-xs text-forest-300/70">
           <router-link to="/" class="hover:text-white transition-colors">Kebijakan Privasi</router-link>

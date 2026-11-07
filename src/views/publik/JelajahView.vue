@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="flex h-screen w-full bg-black overflow-hidden relative">
     
     <!-- ================= SIDEBAR KIRI (Desktop Only) ================= -->
@@ -8,7 +8,7 @@
       <router-link to="/" class="flex items-center gap-3 px-6 h-20 border-b border-forest-800 shrink-0">
         <img :src="logo" alt="Logo" class="w-10 h-10 rounded-full object-cover" />
         <div class="flex flex-col leading-none">
-          <span class="font-extrabold text-lg tracking-tight">DesaWisata</span>
+          <span class="font-extrabold text-lg tracking-tight">JALDES</span>
           <span class="text-[10px] tracking-[0.25em] uppercase font-bold text-emerald-400 mt-0.5">Explorer</span>
         </div>
       </router-link>

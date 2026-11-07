@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gray-50 flex">
     
     <!-- ================= SIDEBAR (PUTIH) ================= -->
@@ -8,7 +8,7 @@
       <router-link to="/" class="flex items-center gap-3 px-6 h-16 border-b border-gray-100 shrink-0">
         <img :src="logo" alt="Logo" class="w-8 h-8 rounded-full object-cover" />
         <div class="flex flex-col leading-none">
-          <span class="font-extrabold text-sm tracking-tight text-gray-900">DesaWisata</span>
+          <span class="font-extrabold text-sm tracking-tight text-gray-900">JALDES</span>
           <span class="text-[9px] tracking-[0.25em] uppercase font-bold text-emerald-600 mt-0.5">Explorer</span>
         </div>
       </router-link>

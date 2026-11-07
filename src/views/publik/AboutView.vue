@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="bg-white">
     
     <!-- ================= HERO ABOUT ================= -->
@@ -22,7 +22,7 @@
           dengan <span class="text-emerald-500">Pengelola Desa</span>
         </h1>
         <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          DesaWisata Explorer adalah direktori wisata desa yang dibangun untuk mempromosikan keindahan, kuliner, dan kerajinan autentik langsung dari sumbernya.
+          JALDES adalah direktori wisata desa yang dibangun untuk mempromosikan keindahan, kuliner, dan kerajinan autentik langsung dari sumbernya.
         </p>
       </div>
     </header>
@@ -55,7 +55,7 @@
 
         <!-- Teks Kanan -->
         <div>
-          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Mengapa DesaWisata Explorer Hadir?</h2>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Mengapa JALDES Hadir?</h2>
           <p class="text-gray-600 leading-relaxed mb-6 text-lg">
             Banyak potensi desa yang luar biasa — mulai dari air terjun tersembunyi, kuliner khas warisan nenek moyang, hingga kerajinan tangan yang dibuat dengan penuh cinta — namun belum terpublikasi dengan baik. 
           </p>
