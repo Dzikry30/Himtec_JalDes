@@ -33,7 +33,8 @@
           Reels Desa
         </div>
 
-        <router-link to="/about" class="flex items-center gap-3 px-3 py-3 rounded-xl text-forest-100 hover:bg-forest-800 hover:text-white transition-colors mt-2">
+        <!-- FIX: /about diganti jadi /tentang -->
+        <router-link to="/tentang" class="flex items-center gap-3 px-3 py-3 rounded-xl text-forest-100 hover:bg-forest-800 hover:text-white transition-colors mt-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           Tentang Kami
         </router-link>
@@ -62,10 +63,21 @@
         </router-link>
       </div>
 
+      <!-- Loading State -->
+      <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center text-white">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+      </div>
+
       <!-- AREA SCROLL SNAP -->
-      <div class="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth hide-scrollbar">
+      <div v-else class="h-full w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth hide-scrollbar">
         
-        <!-- LOOPING CARD (Data Dummy) -->
+        <!-- Empty State -->
+        <div v-if="reelsData.length === 0" class="h-full w-full flex flex-col items-center justify-center text-white/50">
+          <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" /></svg>
+          <p>Belum ada video reels yang diunggah.</p>
+        </div>
+
+        <!-- LOOPING CARD -->
         <div 
           v-for="(item, index) in reelsData" 
           :key="item.id" 
@@ -75,8 +87,21 @@
           <!-- Container Video -->
           <div class="relative w-full h-full lg:max-h-[90vh] lg:w-auto lg:aspect-[9/16] overflow-hidden lg:rounded-3xl bg-gray-900 shadow-2xl group">
             
-            <!-- GAMBAR/VIDEO -->
+            <!-- GAMBAR/VIDEO DINAMIS -->
+            <!-- Kalau DB punya video_url, pakai <video>. Kalau nggak ada, pakai <img> -->
+            <video 
+              v-if="item.videoUrl"
+              autoplay 
+              loop 
+              muted 
+              playsinline
+              class="w-full h-full object-cover"
+              :poster="item.image"
+            >
+              <source :src="item.videoUrl" type="video/mp4" />
+            </video>
             <img 
+              v-else-if="item.image"
               :src="item.image" 
               :alt="item.title" 
               class="w-full h-full object-cover"
@@ -85,10 +110,10 @@
             <!-- Overlay Gradient -->
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent pointer-events-none"></div>
 
-            <!-- ================= TOMBOL AKSI (Kanan Bawah) ================= -->
+            <!-- TOMBOL AKSI (Kanan Bawah) -->
             <div class="absolute right-4 bottom-28 flex flex-col items-center gap-5 z-20">
               
-              <!-- Tombol Maps (Link ke Google Maps) -->
+              <!-- Tombol Maps -->
               <a 
                 :href="item.mapsUrl" 
                 target="_blank" 
@@ -101,7 +126,7 @@
                 <span class="text-white text-[10px] font-semibold drop-shadow">Maps</span>
               </a>
 
-              <!-- Tombol WhatsApp (Link ke WA) -->
+              <!-- Tombol WhatsApp -->
               <a 
                 :href="item.waUrl" 
                 target="_blank" 
@@ -140,8 +165,7 @@
 
           </div>
 
-          <!-- ================= INDIKATOR TITIK (Kanan Tengah - Desktop Only) ================= -->
-          <!-- Bikin user tau ini video ke berapa -->
+          <!-- INDIKATOR TITIK (Kanan Tengah - Desktop Only) -->
           <div class="hidden lg:flex absolute right-6 top-1/2 -translate-y-1/2 flex-col gap-2 z-30">
             <div 
               v-for="(_, i) in reelsData" 
@@ -159,47 +183,56 @@
 
 <script>
 import logo from '../../assets/logo.png'
+import api from '../../services/api' // <--- Import Jembatan API
 
 export default {
   name: 'JelajahView',
   data() {
     return {
       logo,
-      // Data Dummy (Nanti tinggal dihubungin ke database)
-      reelsData: [
-        {
-          id: 1,
-          title: 'Curug Ngebul',
-          village: 'Desa Sukamaju',
-          category: 'Wisata Alam',
-          description: 'Air terjun alami dengan pemandangan hutan hijau dan udara segar pegunungan.',
-          image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop',
-          // GANTI KOORDINAT DI BAWAH SESUAI LOKASI ASLI
-          mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-6.732023,108.545262',
-          // GANTI NOMOR WA DI BAWAH
-          waUrl: 'https://wa.me/6281234567890?text=Halo%20saya%20tertarik%20dengan%20wisata%20Curug%20Ngebul'
-        },
-        {
-          id: 2,
-          title: 'Sate Maranggi Spesial',
-          village: 'Desa Cibodas',
-          category: 'Kuliner Khas',
-          description: 'Sate daging sapi empuk dengan bumbu rahasia turun temurun, dibakar di atas bara arang.',
-          image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=800&auto=format&fit=crop',
-          mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-6.805421,107.617121',
-          waUrl: 'https://wa.me/6281234567891?text=Halo%20saya%20ingin%20memesan%20Sate%20Maranggi'
-        },
-        {
-          id: 3,
-          title: 'Anyaman Bambu Pak Karto',
-          village: 'Desa Wates',
-          category: 'Kerajinan',
-          description: 'Kerajinan anyaman bambu handmade berupa tas, tempat buah, dan hiasan rumah.',
-          image: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=800&auto=format&fit=crop',
-          mapsUrl: 'https://www.google.com/maps/search/?api=1&query=-7.901234,110.123456',
-          waUrl: 'https://wa.me/6281234567892?text=Halo%20saya%20tertarik%20dengan%20anyaman%20bambu'
-        }
-      ]
+      reelsData: [], // <--- Kosongin dulu, nanti diisi API
+      isLoading: true
+    }
+  },
+  mounted() {
+    this.fetchReels()
+  },
+  methods: {
+    async fetchReels() {
+      try {
+        this.isLoading = true
+        // Nembak API Laravel
+        const response = await api.get('/wisata')
+        const rawData = response.data.data
+
+        this.reelsData = rawData.map(item => {
+          
+          // Fallback Gambar
+          let gambarUrl = item.gambar;
+          if (!gambarUrl || gambarUrl.trim() === '') {
+            gambarUrl = 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop';
+          }
+
+          // Fallback Video
+          let videoUrl = item.video_url || null; 
+
+          return {
+            id: item.id,
+            title: item.nama_wisata || 'Tanpa Nama', 
+            village: item.desa ? item.desa.nama : 'Desa Wisata', 
+            category: item.kategori || 'Wisata',
+            description: item.deskripsi || '-',
+            image: gambarUrl,
+            videoUrl: videoUrl, // Masukin video dari DB
+            mapsUrl: item.link_maps || 'https://maps.google.com',
+            waUrl: `https://wa.me/${item.no_wa || '6281234567890'}?text=Halo,%20saya%20tertarik%20dengan%20${item.nama_wisata || 'wisata%20ini'}`
+          }
+        })
+      } catch (error) {
+        console.error("Gagal ambil data Reels dari Laravel:", error)
+      } finally {
+        this.isLoading = false
+      }
     }
   }
 }
