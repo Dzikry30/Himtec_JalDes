@@ -13,7 +13,6 @@
       
       <!-- ================= FILTER SECTION ================= -->
       <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 mb-10">
-        <!-- ... (Kode Dropdown & Input Pencarian tetap sama) ... -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-2">Pilih Desa Wisata</label>
@@ -64,12 +63,12 @@
         <span v-else class="text-sm text-gray-500 font-medium">{{ filteredDestinations.length }} Destinasi Ditemukan</span>
       </div>
 
-      <!-- Loading Spinner (Muncul pas nunggu data dari Laravel) -->
+      <!-- Loading Spinner -->
       <div v-if="isLoading" class="flex justify-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-forest-600"></div>
       </div>
 
-      <!-- Grid Card (Kalau data udah masuk) -->
+      <!-- Grid Card -->
       <div v-else-if="filteredDestinations.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <DestinationCard 
           v-for="dest in filteredDestinations" 
@@ -91,7 +90,7 @@
 
 <script>
 import DestinationCard from '../../components/DestinationCard.vue'
-import api from '../../services/api' // <--- IMPORT JEMBATAN API
+import api from '../../services/api'
 
 export default {
   name: 'KatalogView',
@@ -99,20 +98,21 @@ export default {
   data() {
     return {
       activeKategori: '',
-      destinations: [], // <--- Data dimulai dari kosong
-      isLoading: true   // <--- Status loading
+      destinations: [],
+      isLoading: true
     }
   },
   computed: {
     filteredDestinations() {
       if (!this.activeKategori) return this.destinations
+      // Filter berdasarkan categorySlug
       return this.destinations.filter(
         (dest) => dest.categorySlug === this.activeKategori
       )
     }
   },
   mounted() {
-    this.fetchData() // <--- Tarik data pas halaman dibuka
+    this.fetchData()
     this.activeKategori = this.$route.query.kategori || ''
   },
   watch: {
@@ -121,25 +121,47 @@ export default {
     }
   },
   methods: {
-    // ================= FUNGSI NEMBAK LARAVEL =================
     async fetchData() {
       try {
         this.isLoading = true
-        // Tembak route `Route::get('/wisata', ...)` yang lo bikin di Laravel
         const response = await api.get('/wisata')
         
-        // Mapping: Sesuaikan nama field di bawah (item.xxx) dengan JSON dari database lo
-        this.destinations = response.data.data.map(item => ({
-          id: item.id,
-          title: item.nama_wisata || 'Tanpa Nama', 
-          village: item.desa ? item.desa.nama : 'Desa', // Sesuaikan relasi
-          category: item.kategori || 'Wisata',
-          categorySlug: item.kategori_slug || 'wisata',
-          description: item.deskripsi || '-',
-          image: item.gambar || 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800',
-          mapsUrl: item.link_maps || '#',
-          waUrl: `https://wa.me/${item.no_wa || '6281234567890'}`
-        }))
+        this.destinations = response.data.data.map(item => {
+          
+          // ================= LOGIKA FALLBACK DATA =================
+          
+          // 1. Fallback Gambar
+          // Kalau item.gambar kosong (null/""), pakai gambar dari Unsplash
+          let gambarUrl = item.gambar;
+          if (!gambarUrl || gambarUrl.trim() === '') {
+            gambarUrl = 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop';
+          }
+
+          // 2. Fallback Kategori Slug
+          // Ubah nama kategori "Wisata Alam" jadi "wisata" buat filter
+          let slug = 'wisata';
+          if (item.kategori) {
+            const lowerKat = item.kategori.toLowerCase();
+            if (lowerKat.includes('kuliner')) slug = 'kuliner';
+            else if (lowerKat.includes('kerajinan')) slug = 'kerajinan';
+          }
+
+          // 3. Fallback WA
+          let waNumber = item.no_wa || '6281234567890';
+
+          return {
+            id: item.id,
+            title: item.nama_wisata || 'Tanpa Nama', 
+            village: item.desa ? item.desa.nama : 'Desa Wisata', 
+            category: item.kategori || 'Wisata',
+            categorySlug: slug, // Hasil dari logika di atas
+            description: item.deskripsi || 'Belum ada deskripsi untuk destinasi ini.',
+            image: gambarUrl, // Hasil dari logika fallback gambar
+            mapsUrl: item.link_maps || 'https://maps.google.com', // Fallback Maps
+            waUrl: `https://wa.me/${waNumber}?text=Halo,%20saya%20tertarik%20dengan%20${item.nama_wisata || 'wisata%20ini'}`
+          }
+        })
+
       } catch (error) {
         console.error("Gagal ambil data dari Laravel:", error)
         alert("Gagal memuat data. Pastikan server Laravel nyala dan CORS udah di-setting.")
