@@ -21,10 +21,12 @@
       <!-- ================= KONTEN UTAMA ================= -->
       <div v-else-if="destination" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
         
-        <!-- ================= HERO VIDEO ================= -->
+        <!-- ================= HERO VIDEO / GAMBAR ================= -->
         <div class="relative w-full aspect-video sm:aspect-[21/9] bg-black group">
-          <!-- Video Dinamis -->
+          
+          <!-- Jika database punya video_url, tampilkan video -->
           <video 
+            v-if="destination.videoUrl"
             controls 
             autoplay 
             muted 
@@ -33,18 +35,29 @@
             :poster="destination.image"
           >
             <source :src="destination.videoUrl" type="video/mp4" />
-            <!-- Teks fallback kalau browser nggak support video -->
-            Browser Anda tidak mendukung tag video.
           </video>
+
+          <!-- Jika tidak ada video, tampilkan gambar utama saja -->
+          <img 
+            v-else-if="destination.image"
+            :src="destination.image" 
+            :alt="destination.title"
+            class="w-full h-full object-cover"
+          />
+
+          <!-- Fallback jika tidak ada gambar & video sama sekali -->
+          <div v-else class="w-full h-full flex items-center justify-center bg-gray-900 text-gray-500">
+            <span class="text-lg">Tidak ada media tersedia</span>
+          </div>
           
           <!-- Overlay Gelap (Biar teks kebaca) -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
           
-          <!-- Judul di Atas Video -->
+          <!-- Judul di Atas Media -->
           <div class="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
             <div>
               <span class="inline-block px-3 py-1 mb-2 rounded-full text-[10px] uppercase tracking-wider font-bold text-white bg-forest-600 shadow-sm">
-                {{ destination.category || 'Kategori' }}
+                {{ destination.category }}
               </span>
               <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
                 {{ destination.title }}
@@ -57,40 +70,9 @@
           </div>
         </div>
 
-        <!-- ================= KONTEN BAWAH (FOTO + TEKS) ================= -->
+        <!-- ================= KONTEN BAWAH (DESKRIPSI & TOMBOL) ================= -->
         <div class="p-6 sm:p-10">
           
-          <!-- GALERI FOTO (Bento Grid) -->
-          <div class="mb-10">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">Galeri Foto</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-              
-              <!-- Foto 1 (Besar) -> Ambil dari gambar utama destinasi -->
-              <div class="col-span-2 md:col-span-2 aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <img :src="destination.image" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer" alt="Galeri Utama" />
-              </div>
-              
-              <!-- Foto 2 s/d 6 (Dummy Unsplash karena DB belum punya galeri) -->
-              <div class="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer" alt="Galeri 2" />
-              </div>
-              <div class="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1518182170546-076616fd4afc?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer" alt="Galeri 3" />
-              </div>
-              <div class="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer" alt="Galeri 4" />
-              </div>
-              <div class="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer" alt="Galeri 5" />
-              </div>
-              <div class="col-span-2 md:col-span-2 aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer" alt="Galeri 6" />
-              </div>
-
-            </div>
-          </div>
-
-          <!-- DESKRIPSI & TOMBOL AKSI (2 Kolom) -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             
             <!-- Kiri: Deskripsi -->
@@ -186,31 +168,17 @@ export default {
         const response = await api.get(`/wisata/${this.id}`)
         const item = response.data.data
 
-        // ================= LOGIKA FALLBACK =================
-        
-        // 1. Fallback Gambar
-        let gambarUrl = item.gambar;
-        if (!gambarUrl || gambarUrl.trim() === '') {
-          gambarUrl = 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=1200&auto=format&fit=crop';
-        }
-
-        // 2. Fallback Video Promosi
-        let videoUrl = item.video_url;
-        if (!videoUrl || videoUrl.trim() === '') {
-          // Pakai video sampel kalau database kosong
-          videoUrl = 'https://cdn.coverr.co/videos/coverr-a-village-in-the-mountains-1573/1080p.mp4';
-        }
-
+        // Langsung murni dari database. Kalau kosong, ya kosong.
         this.destination = {
           id: item.id,
           title: item.nama_wisata || 'Tanpa Nama', 
           category: item.kategori || 'Wisata',
           village: item.desa ? item.desa.nama_desa : 'Lokasi Desa',
           description: item.deskripsi || 'Tidak ada deskripsi.',
-          image: gambarUrl,
-          videoUrl: videoUrl,
-          mapsUrl: item.link_maps || 'https://maps.google.com',
-          waUrl: `https://wa.me/${item.no_wa || '6281234567890'}?text=Halo,%20saya%20tertarik%20dengan%20${item.nama_wisata || 'wisata%20ini'}`
+          image: item.gambar || null,          // <--- Gambar
+          videoUrl: item.video_url || null,    // <--- Video (Jika ada di DB)
+          mapsUrl: item.link_maps || null,     // <--- Maps
+          waUrl: item.no_wa ? `https://wa.me/${item.no_wa}?text=Halo,%20saya%20tertarik%20dengan%20${item.nama_wisata}` : null // <--- WA
         }
       } catch (error) {
         console.error("Gagal ambil detail dari Laravel:", error)
