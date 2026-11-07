@@ -1,4 +1,4 @@
-  <template>
+﻿  <template>
     <header
       :class="[
         'fixed top-0 left-0 w-full z-50 transition-all duration-300',
@@ -12,7 +12,7 @@
           <router-link to="/" class="flex items-center gap-2.5 shrink-0 group">
             <img
               :src="logo"
-              alt="DesaWisata Explorer"
+              alt="JALDES"
               class="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
             <div class="flex flex-col leading-none">
@@ -21,9 +21,7 @@
                   'font-extrabold tracking-tight text-base md:text-lg transition-colors',
                   isDarkNav ? 'text-forest-800' : 'text-white'
                 ]"
-              >
-                DesaWisata
-              </span>
+              >JALDES</span>
               <span
                 :class="[
                   'text-[10px] tracking-[0.25em] uppercase font-bold mt-0.5 transition-colors',
