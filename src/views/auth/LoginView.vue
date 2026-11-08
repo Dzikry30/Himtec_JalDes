@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="min-h-screen relative flex items-center justify-center overflow-hidden bg-gray-900 pt-20 pb-10">
     
     <!-- ================= BACKGROUND VIDEO FULL SCREEN ================= -->
@@ -131,7 +131,7 @@ async handleLogin() {
   
   try {
     const response = await api.post('/login', {
-      email: this.email,
+      login: this.email, // Laravel mewajibkan key 'login'
       password: this.password
     })
 
@@ -140,8 +140,8 @@ async handleLogin() {
 
     // Kadang Laravel ngasih response.data.data.user (tergantung Controller)
     // Kita coba handle dua-duanya
-    const userData = response.data.user || response.data.data?.user
-    const tokenData = response.data.access_token || response.data.data?.access_token
+    const userData = response.data.data?.user || response.data.user
+    const tokenData = response.data.data?.token || response.data.token || response.data.access_token
 
     if (!userData || !tokenData) {
       this.errorMessage = 'Format response dari server tidak dikenali.'
@@ -153,7 +153,9 @@ async handleLogin() {
 
     const role = userData.role
 
-    if (role === 'kd') {
+    if (role === 'admin') {
+      this.$router.push({ name: 'admin-dashboard' })
+    } else if (role === 'kd') {
       this.$router.push({ name: 'kades-dashboard' })
     } else if (role === 'agensi') {
       this.$router.push({ name: 'agensi-dashboard' })
