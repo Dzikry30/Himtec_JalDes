@@ -1,13 +1,11 @@
 <template>
   <DashboardLayout pageTitle="Data Agensi">
     
-    <!-- Header -->
     <div class="mb-6">
       <h2 class="text-2xl font-bold text-gray-900 mb-1">Data Agensi</h2>
-      <p class="text-sm text-gray-500">Daftar semua Agensi yang terdaftar di sistem. Data ini dikelola oleh masing-masing agensi.</p>
+      <p class="text-sm text-gray-500">Daftar semua Agensi yang terdaftar di sistem.</p>
     </div>
 
-    <!-- Tabel -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       
       <!-- Loading State -->
@@ -28,16 +26,16 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          <tr v-for="a in agensiList" :key="a.id" class="hover:bg-gray-50 transition-colors">
+          <!-- Looping pakai optional chaining (?) biar aman -->
+          <tr v-for="(a, index) in agensiList" :key="a?.id || index" class="hover:bg-gray-50 transition-colors">
             <td class="px-6 py-4 font-medium text-gray-900">
-              {{ a.nama_agensi }}
-              <!-- Deskripsi kecil di bawah nama -->
-              <p class="text-xs text-gray-400 mt-1 line-clamp-1" v-if="a.deskripsi">{{ a.deskripsi }}</p>
+              {{ a?.nama_agensi || '-' }}
+              <p class="text-xs text-gray-400 mt-1 line-clamp-1" v-if="a?.deskripsi">{{ a.deskripsi }}</p>
             </td>
-            <td class="px-6 py-4 text-gray-600">{{ a.user?.username || '-' }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ a.user?.email || '-' }}</td>
-            <td class="px-6 py-4">{{ a.nomor_telepon || '-' }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ a.npwp || '-' }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ a?.user?.username || '-' }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ a?.user?.email || '-' }}</td>
+            <td class="px-6 py-4">{{ a?.nomor_telepon || '-' }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ a?.npwp || '-' }}</td>
           </tr>
           
           <!-- Empty State -->
@@ -74,10 +72,21 @@ export default {
       try {
         this.isLoading = true
         const res = await api.get('/agensi')
-        this.agensiList = res.data.data
+        
+        console.log("Response dari Laravel:", res.data)
+
+        // Antisipasi format response (kadang dibungkus { data: [...] }, kadang array langsung)
+        let data = res.data.data ? res.data.data : res.data
+        
+        // Pastiin data yang masuk beneran array
+        if (Array.isArray(data)) {
+          this.agensiList = data
+        } else {
+          this.agensiList = []
+        }
+
       } catch (error) {
-        console.error(error)
-        alert("Gagal memuat data dari server.")
+        console.error("Gagal ambil data:", error)
       } finally {
         this.isLoading = false
       }

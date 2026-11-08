@@ -7,7 +7,7 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-1">Daftar Wisata</h2>
         <p class="text-sm text-gray-500">Kelola destinasi wisata yang Anda daftarkan.</p>
       </div>
-      <button @click="openModal()" class="inline-flex items-center gap-2 bg-forest-600 hover:bg-forest-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md transition-colors">
+      <button @click="openModal()" class="inline-flex items-center gap-2 bg-forest-600 hover:bg-forest-700 text-dark text-sm font-bold px-5 py-2.5 rounded-xl shadow-md transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
         Tambah Wisata
       </button>
@@ -108,7 +108,7 @@
 
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
           <button @click="closeModal" class="px-5 py-2.5 font-bold text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-xl">Batal</button>
-          <button @click="saveData" :disabled="isSaving" class="px-5 py-2.5 font-bold text-white bg-forest-600 hover:bg-forest-700 rounded-xl shadow-md disabled:opacity-70">
+          <button @click="saveData" :disabled="isSaving" class="px-5 py-2.5 font-bold text-gray-600 bg-forest-600 hover:bg-forest-700 rounded-xl shadow-md disabled:opacity-70">
             {{ isSaving ? 'Menyimpan...' : 'Simpan Data' }}
           </button>
         </div>

@@ -21,18 +21,14 @@
           :key="item.label"
           :to="item.to"
           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
-          :class="
-            $route.path === item.to 
-              ? 'bg-emerald-50 text-emerald-700' 
-              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-          "
+          :class="$route.path === item.to ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'"
         >
           <svg class="w-5 h-5 shrink-0" :class="$route.path === item.to ? 'text-emerald-600' : 'text-gray-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24" v-html="item.iconPath"></svg>
           {{ item.label }}
         </router-link>
       </div>
 
-      <!-- Tombol Logout -->
+      <!-- Tombol Logout (Sidebar) -->
       <div class="p-4 border-t border-gray-100">
         <button @click="handleLogout" class="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
@@ -43,6 +39,8 @@
 
     <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col min-w-0 lg:pl-64">
+      
+      <!-- NAVBAR ATAS -->
       <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-40">
         
         <div class="flex items-center gap-4">
@@ -52,25 +50,42 @@
           <h1 class="font-bold text-gray-800 text-lg hidden sm:block">{{ pageTitle }}</h1>
         </div>
 
-        <div class="flex items-center gap-4">
-          <div class="text-right hidden sm:block">
-            <p class="text-sm font-bold text-gray-800 leading-none">{{ currentUserName }}</p>
-            <!-- FIX: Tampilan Role yang bener buat 3 role -->
-            <p class="text-xs text-forest-600 font-semibold mt-1 uppercase tracking-wider">
-              {{ roleLabel }}
-            </p>
-          </div>
-          <div class="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold uppercase">
-            {{ currentUserName.charAt(0) }}
-          </div>
+        <!-- User Profile dengan Dropdown -->
+        <div class="relative">
+          <button @click="showProfileMenu = !showProfileMenu" class="flex items-center gap-3 focus:outline-none group">
+            <div class="text-right hidden sm:block">
+              <p class="text-sm font-bold text-gray-800 leading-none group-hover:text-emerald-700 transition-colors">{{ currentUserName }}</p>
+              <p class="text-xs text-forest-600 font-semibold mt-1 uppercase tracking-wider">{{ roleLabel }}</p>
+            </div>
+            <!-- Avatar -->
+            <div class="w-10 h-10 rounded-full bg-emerald-100 border-2 border-transparent group-hover:border-emerald-400 flex items-center justify-center text-emerald-700 font-bold uppercase transition-all shadow-sm">
+              {{ currentUserName.charAt(0) }}
+            </div>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <transition name="fade">
+            <div v-if="showProfileMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+              <div class="px-4 py-3 border-b border-gray-50 sm:hidden">
+                <p class="text-sm font-bold text-gray-800 leading-none">{{ currentUserName }}</p>
+                <p class="text-xs text-forest-600 font-semibold mt-1 uppercase">{{ roleLabel }}</p>
+              </div>
+              
+              <button @click="handleLogout" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-semibold flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                Keluar
+              </button>
+            </div>
+          </transition>
         </div>
       </header>
 
-      <main class="flex-1 p-4 sm:p-6 lg:p-8">
+      <main class="flex-1 p-4 sm:p-6 lg:p-8" @click="showProfileMenu = false">
         <slot />
       </main>
     </div>
 
+    <!-- Overlay Mobile -->
     <div v-if="mobileOpen" @click="mobileOpen = false" class="fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
   </div>
 </template>
@@ -88,26 +103,25 @@ export default {
     return {
       logo,
       mobileOpen: false,
+      showProfileMenu: false, // State buat dropdown profil
       currentUser: null
     }
   },
   computed: {
     currentRole() {
       if (!this.currentUser) return ''
-      return this.currentUser.role // 'kd', 'agensi', atau 'admin'
+      return this.currentUser.role
     },
     currentUserName() {
       if (!this.currentUser) return 'Pengguna'
       return this.currentUser.nama_tampilan || this.currentUser.username || 'Pengguna'
     },
-    // FIX: Label Role
     roleLabel() {
       if (this.currentRole === 'kd') return 'Kepala Desa'
       if (this.currentRole === 'admin') return 'Administrator'
       return 'Agensi'
     },
     menuItems() {
-      // 1. MENU KADES
       if (this.currentRole === 'kd') {
         return [
           { label: 'Ringkasan', to: '/kades/dashboard', iconPath: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
@@ -115,8 +129,6 @@ export default {
           { label: 'Moderasi & Persetujuan', to: '/kades/moderasi', iconPath: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />' }
         ]
       }
-      
-      // 2. MENU ADMIN
       if (this.currentRole === 'admin') {
         return [
           { label: 'Dashboard', to: '/admin/dashboard', iconPath: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
@@ -125,8 +137,6 @@ export default {
           { label: 'Data Agensi', to: '/admin/agensi', iconPath: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />' },
         ]
       }
-
-      // 3. MENU AGENSI
       return [
         { label: 'Dashboard', to: '/agensi/dashboard', iconPath: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
         { label: 'Wisata Saya', to: '/agensi/wisata', iconPath: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />' },
@@ -153,3 +163,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+</style>
