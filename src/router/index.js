@@ -25,10 +25,10 @@ import DataAgensiView from '../views/admin/DataAgensiView.vue' // <--- BARU
 
 const routes = [
   // PUBLIK
-  { path: '/', name: 'home', component: HomeView },
+  { path: '/', name: 'jelajah', component: JelajahView },
+  { path: '/home', name: 'home', component: HomeView },
   { path: '/katalog', name: 'katalog', component: KatalogView },
   { path: '/destinasi/:id', name: 'detail', component: DetailView, props: true },
-  { path: '/jelajah', name: 'jelajah', component: JelajahView },
   { path: '/tentang', name: 'tentang', component: AboutView },
 
   // AUTH
