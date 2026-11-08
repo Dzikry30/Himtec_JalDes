@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen relative flex items-center justify-center overflow-hidden bg-gray-900 pt-20 pb-10">
     
     <!-- ================= BACKGROUND VIDEO FULL SCREEN ================= -->

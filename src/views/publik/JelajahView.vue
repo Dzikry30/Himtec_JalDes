@@ -17,7 +17,8 @@
       <div class="flex-1 overflow-y-auto py-6 px-4 space-y-2">
         <p class="px-3 text-xs font-bold text-forest-400 uppercase tracking-wider mb-4">Menu</p>
         
-        <router-link to="/" class="flex items-center gap-3 px-3 py-3 rounded-xl text-forest-100 hover:bg-forest-800 hover:text-white transition-colors">
+        <!-- FIX: /home -->
+        <router-link to="/home" class="flex items-center gap-3 px-3 py-3 rounded-xl text-forest-100 hover:bg-forest-800 hover:text-white transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
           Beranda
         </router-link>
@@ -33,7 +34,6 @@
           Reels Desa
         </div>
 
-        <!-- FIX: /about diganti jadi /tentang -->
         <router-link to="/tentang" class="flex items-center gap-3 px-3 py-3 rounded-xl text-forest-100 hover:bg-forest-800 hover:text-white transition-colors mt-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           Tentang Kami
@@ -54,7 +54,8 @@
       
       <!-- HEADER MOBILE -->
       <div class="lg:hidden absolute top-0 left-0 right-0 z-50 px-4 py-4 pointer-events-none bg-gradient-to-b from-black/80 to-transparent flex justify-between items-center">
-        <router-link to="/" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white pointer-events-auto">
+        <!-- FIX: /home -->
+        <router-link to="/home" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white pointer-events-auto">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         </router-link>
         <h1 class="text-white font-bold text-lg drop-shadow-md">Reels Desa</h1>
@@ -88,7 +89,6 @@
           <div class="relative w-full h-full lg:max-h-[90vh] lg:w-auto lg:aspect-[9/16] overflow-hidden lg:rounded-3xl bg-gray-900 shadow-2xl group">
             
             <!-- GAMBAR/VIDEO DINAMIS -->
-            <!-- Kalau DB punya video_url, pakai <video>. Kalau nggak ada, pakai <img> -->
             <video 
               v-if="item.videoUrl"
               autoplay 
@@ -155,7 +155,7 @@
               </span>
             </div>
 
-            <!-- Petunjuk Swipe (Cuma di card pertama) -->
+            <!-- Petunjuk Swipe -->
             <div v-if="index === 0" class="absolute inset-0 flex items-center justify-center pointer-events-none z-30 opacity-70 animate-pulse">
               <div class="flex flex-col items-center text-white/60">
                 <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
@@ -165,7 +165,7 @@
 
           </div>
 
-          <!-- INDIKATOR TITIK (Kanan Tengah - Desktop Only) -->
+          <!-- INDIKATOR TITIK (Kanan Tengah) -->
           <div class="hidden lg:flex absolute right-6 top-1/2 -translate-y-1/2 flex-col gap-2 z-30">
             <div 
               v-for="(_, i) in reelsData" 
@@ -183,14 +183,14 @@
 
 <script>
 import logo from '../../assets/logo.png'
-import api from '../../services/api' // <--- Import Jembatan API
+import api from '../../services/api'
 
 export default {
   name: 'JelajahView',
   data() {
     return {
       logo,
-      reelsData: [], // <--- Kosongin dulu, nanti diisi API
+      reelsData: [],
       isLoading: true
     }
   },
@@ -201,29 +201,27 @@ export default {
     async fetchReels() {
       try {
         this.isLoading = true
-        // Nembak API Laravel
-        const response = await api.get('/wisata')
+        // Nembak API dengan query ?all=true biar dapet semua data
+        const response = await api.get('/wisata?all=true')
         const rawData = response.data.data
 
         this.reelsData = rawData.map(item => {
           
-          // Fallback Gambar
           let gambarUrl = item.gambar;
           if (!gambarUrl || gambarUrl.trim() === '') {
             gambarUrl = 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop';
           }
 
-          // Fallback Video
-          let videoUrl = item.video_url || null; 
+          let videoUrl = item.video || null; 
 
           return {
             id: item.id,
             title: item.nama_wisata || 'Tanpa Nama', 
-            village: item.desa ? item.desa.nama : 'Desa Wisata', 
+            village: item.desa ? item.desa.nama_desa : 'Desa Wisata', 
             category: item.kategori || 'Wisata',
             description: item.deskripsi || '-',
             image: gambarUrl,
-            videoUrl: videoUrl, // Masukin video dari DB
+            videoUrl: videoUrl,
             mapsUrl: item.link_maps || 'https://maps.google.com',
             waUrl: `https://wa.me/${item.no_wa || '6281234567890'}?text=Halo,%20saya%20tertarik%20dengan%20${item.nama_wisata || 'wisata%20ini'}`
           }
@@ -239,7 +237,6 @@ export default {
 </script>
 
 <style scoped>
-/* Sembunyikan scrollbar biar bersih */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

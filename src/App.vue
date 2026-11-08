@@ -19,10 +19,13 @@ export default {
     showNavbar() {
       const path = this.$route.path
       
-
+      // 1. Sembunyikan di halaman Dashboard (Agensi, Kades, Admin)
       const isDashboard = path.startsWith('/agensi') || path.startsWith('/kades') || path.startsWith('/admin')
-      const isReels = path === '/jelajah'
       
+      // 2. Sembunyikan di halaman Reels (/) karena full screen
+      const isReels = path === '/' 
+      
+      // Tampilkan Navbar di semua halaman SELAIN Dashboard & Reels (termasuk Login & Register)
       return !isDashboard && !isReels
     }
   }

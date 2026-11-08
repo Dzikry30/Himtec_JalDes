@@ -47,7 +47,7 @@
           </h4>
           <ul class="space-y-3 text-sm">
             <li>
-              <router-link to="/" class="text-forest-200/80 hover:text-white transition-colors">
+              <router-link to="/home" class="text-forest-200/80 hover:text-white transition-colors">
                 Beranda
               </router-link>
             </li>
