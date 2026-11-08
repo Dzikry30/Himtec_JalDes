@@ -17,4 +17,20 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// Kalau token ditolak server (401), hapus sesi lalu kembali ke login
+api.interceptors.response.use(
+  response => response,
+  error => {
+    const isLoginRequest = error.config?.url?.includes('/login');
+    if (error.response?.status === 401 && !isLoginRequest) {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

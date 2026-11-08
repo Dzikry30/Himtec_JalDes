@@ -63,16 +63,24 @@ const router = createRouter({
 
 // ================= SATPAM ROUTER =================
 router.beforeEach((to, from, next) => {
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const token = localStorage.getItem('auth_token')
+  let user = null
+  try {
+    user = JSON.parse(localStorage.getItem('user') || 'null')
+  } catch (e) {
+    user = null
+  }
   
   const isProtected = to.path.startsWith('/kades') || to.path.startsWith('/agensi') || to.path.startsWith('/admin')
 
-  if (isProtected && !user) {
+  if (isProtected && (!token || !user)) {
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('user')
     alert('Anda harus login terlebih dahulu!')
     return next('/login')
   }
 
-  if (user) {
+  if (token && user) {
     // 1. Cek Kades
     if (to.path.startsWith('/kades') && user.role !== 'kd') {
       alert('Akses Ditolak! Anda bukan Kepala Desa.')
