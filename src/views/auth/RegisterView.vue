@@ -42,25 +42,25 @@
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6">
               <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <span
-                  class="bg-forest-100 text-forest-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                  class="bg-emerald-100 text-emerald-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
                 Profil Agensi
               </h3>
               <div class="space-y-4">
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Agensi *</label>
-                  <input v-model="agency.nama_agensi" type="text" required placeholder="Pesona Alam Wisata" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500" />
+                  <input v-model="agency.nama_agensi" type="text" required placeholder="Pesona Alam Wisata" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">Nomor Telepon / WA *</label>
-                  <input v-model="agency.nomor_telepon" type="text" required placeholder="08123456789" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500" />
+                  <input v-model="agency.nomor_telepon" type="text" required placeholder="08123456789" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">NPWP (Opsional)</label>
-                  <input v-model="agency.npwp" type="text" placeholder="01.234.567.8-123.000" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500" />
+                  <input v-model="agency.npwp" type="text" placeholder="01.234.567.8-123.000" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">Deskripsi (Opsional)</label>
-                  <textarea v-model="agency.deskripsi" rows="3" placeholder="Profil singkat agensi..." class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500"></textarea>
+                  <textarea v-model="agency.deskripsi" rows="3" placeholder="Profil singkat agensi..." class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500"></textarea>
                 </div>
               </div>
             </div>
@@ -68,26 +68,26 @@
             <!-- AKUN LOGIN -->
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6">
               <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span class="bg-forest-100 text-forest-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                <span class="bg-emerald-100 text-emerald-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
                 Akun Login
               </h3>
               <div class="space-y-4">
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">Username *</label>
-                  <input v-model="user.username" type="text" required placeholder="Username unik" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500" />
+                  <input v-model="user.username" type="text" required placeholder="Username unik" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">Email *</label>
-                  <input v-model="user.email" type="email" required placeholder="email@agensi.com" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500" />
+                  <input v-model="user.email" type="email" required placeholder="email@agensi.com" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-1.5">Password *</label>
-                  <input v-model="user.password" type="password" required placeholder="Min 6 karakter" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-forest-500" />
+                  <input v-model="user.password" type="password" required placeholder="Min 6 karakter" class="block w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
                 </div>
               </div>
             </div>
 
-            <button type="submit" :disabled="isLoading" class="w-full flex justify-center items-center gap-2 py-4 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-forest-600 hover:bg-forest-700 disabled:opacity-70">
+            <button type="submit" :disabled="isLoading" class="w-full flex justify-center items-center gap-2 py-4 px-4 rounded-xl shadow-md text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-70 transition-colors">
               {{ isLoading ? 'Mendaftarkan...' : 'Daftar Sebagai Agensi Baru' }}
             </button>
           </form>
@@ -95,7 +95,7 @@
           <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
               Sudah punya akun? 
-              <router-link to="/login" class="font-bold text-forest-600 hover:underline">Masuk di sini</router-link>
+              <router-link to="/login" class="font-bold text-emerald-600 hover:underline">Masuk di sini</router-link>
             </p>
           </div>
         </div>
@@ -123,27 +123,23 @@ export default {
       this.errorMessage = ''
 
       try {
-        // Format payload sesuai Controller (users dibungkus array)
         const payload = {
           ...this.agency,
-          username: this.users[0].username,
-          email: this.users[0].email,
-          password: this.users[0].password
+          username: this.user.username,
+          email: this.user.email,
+          password: this.user.password
         }
-        console.log('Payload Register:', payload) // Debugging: cek payload sebelum dikirim
+        console.log('Payload Register:', payload)
 
-        // Nembak API Register di Laravel
         const response = await api.post('/agensi', payload)
 
         alert(response.data.message)
         this.$router.push('/login')
 
       } catch (error) {
-        // Tangkap pesan error validasi dari Laravel
         if (error.response && error.response.data && error.response.data.message) {
           this.errorMessage = error.response.data.message
 
-          // Kalau error validasi (misal username udah dipakai), tampilin list errornya
           if (error.response.data.errors) {
             const firstError = Object.values(error.response.data.errors)[0][0];
             this.errorMessage = firstError;
